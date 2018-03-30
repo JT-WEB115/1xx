@@ -20,16 +20,17 @@ function init() {
 
     $.ajax({
         method: 'GET',
-        url: 'assets/data/menu.json',
+        url: 'https://me.inside-out-project.com/wp-json/wp-api-menus/v2/menus/3',
         dataType: 'json',
         success: function (data) {
-
-			$('nav').hide();
-			
+            
+            $('nav').hide();
+            
             var menu = menuBuilder(data.items);
 
-            $('nav').html(menu).slidedown();
-			$("#loaderDiv").fadeOut("slow");
+            $('nav').html(menu).slideDown();
+            
+            $("#loaderDiv").fadeOut("slow");
 
         },
         error: function () {
