@@ -26,7 +26,7 @@ function init() {
             $('nav li a').click(function () {
                 getPage($(this).data("pgid"));
             });
-            getPage(314);
+            getPage(65);
             $("#loaderDiv").fadeOut("slow");
         },
         error: function () {
@@ -57,7 +57,7 @@ function getPage(obj) {
     $("#loaderDiv").fadeIn("slow");
     $.ajax({
         method: 'GET',
-        url: 'https://me.inside-out-project.com/wp-json/wp/v2/pages/' + obj,
+        url: 'http://me.jtdomain.com/wordpress/wp-json/wp/v2/pages/' + obj,
         dataType: 'json',
         success: function (data) {
             var pgbuild = '';
@@ -78,3 +78,4 @@ function getPage(obj) {
         }
     });
 }
+
