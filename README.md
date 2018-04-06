@@ -1,5 +1,5 @@
 1xx
-http://1xx.jtdomain.com/index.html
+http://1xx.jtdomain.com
 inside out project version 100.0
 
 added header resize functionality
