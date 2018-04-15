@@ -28,35 +28,55 @@ function init() {
             });
             getPage(65);
             $("#loaderDiv").fadeOut("slow");
-			 $('nav li a').click(function () {
-                getPost($(this).data("pgid"));
-				 getPost(105,103,101,98,9);
-            });
-        },
+		},
         error: function () {
             console.log('all is not good');
         }
     });
 }
 
+$.ajax({
+		method: 'GET',
+		url: 'http://me.jtdomain.com/wordpress/wp-json/wp-api-menus/v2/menus/3',
+		dataType: 'json',
+		success: function (data) {
+			
+			var menu = menuBuilder(data.items, 'genLinks', 'footer-ul');
+			$('#genLinks').replaceWith(menu);
+			$('#genLinks li a').click(function(){
+				getPage($(this).data("pgid"));
+			});
+			
+			
+		},
+		error: function () {
+			console.log('all is not good');
+		}
+	});
 
-function menuBuilder(obj) {
-    var theMenu = '';
-    if (obj.length > 0) {
-        theMenu = theMenu + '<ul>';
-        obj.forEach(function (item) {
-            theMenu = theMenu + '<li><a href="#" data-pgid="' + item.object_id + '">' + item.title + '</a>';
-            if (item.children) {
-                theMenu = theMenu + menuBuilder(item.children);
-            }
-            theMenu = theMenu + '</li>';
-        });
-        theMenu = theMenu + '</ul>';
-    } else {
-        console.log('no data');
-    }
-    return theMenu;
+	getPosts();
+
+function menuBuilder(obj, elID, elCls) {
+	var theMenu = '';
+	
+	let hasClass = (elCls !== undefined)?' class="'+elCls+'"':'';
+	
+	if (obj) {
+		theMenu = theMenu + '<ul'+hasClass+'>';
+		obj.forEach(function (item) {
+			theMenu = theMenu + '<li><a href="#" data-pgid="' + item.object_id + '">' + item.title + '</a>';
+			if (item.children) {
+				theMenu = theMenu + menuBuilder(item.children);
+			}
+			theMenu = theMenu + '</li>';
+		});
+		theMenu = theMenu + '</ul>';
+	} else {
+		console.log('no data');
+	}
+	return theMenu;
 }
+
 
 function getPage(obj) {
     $("#loaderDiv").fadeIn("slow");
@@ -83,15 +103,27 @@ function getPage(obj) {
         }
     });
 }
-
-function getPost(obj) {
-    $.ajax({
-        method: 'GET',
-        url: 'http://me.jtdomain.com/wordpress/wp-json/wp/v2/posts/?per_page=5' + obj,
-        dataType: 'json',
-        success: function (data) {
-            var pgbuild = '';
-            pgbuild = '<section><div class="container">' + data.content.rendered + '</div></section>';
-		}
+function getPosts(){
+	
+	$.ajax({
+		method: 'GET',
+			url: 'http://me.jtdomain.com/wordpress/wp-json/wp/v2/posts?orderby=date&order=desc&per_page=5',
+		dataType: 'json', 
+		success: function (data) {
+		    $("#latestPosts").html('<p id="postLdr"><i class="fa fa-cogs"></i> Loading Posts</p>');
+			data.forEach(function (item) {
+				var myDate = new Date(item.date);
+		
+				$("#latestPosts").prepend('<p>' + item.title.rendered + '<span>' + myDate.getMonth() + '-' + myDate.getDay() + '-' + myDate.getFullYear() + '</span></p>');
+				
+		
+					});
+					$("#postLdr").remove();	
+				},
+				error: function () {
+					console.log('bad');
+				}	
 	});
+	
+	
 }
